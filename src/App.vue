@@ -18,7 +18,6 @@
         <label for="to-date">To Date:</label>
         <input type="date" v-model="form.toDate" id="to-date" />
       </div>
-      <button type="submit">Поиск машин </button>
     </form>
 
     <!-- Прелоадер -->
