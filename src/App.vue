@@ -26,22 +26,23 @@
     </div>
 
     <!-- Выводим данные как есть для отладки -->
-    <pre v-else>{{ data }}</pre>
+    <!-- <pre v-else>{{ data }}</pre> -->
 
     <!-- Проверка: если данные о машинах существуют -->
     <div v-if="data && data.vehicles && data.vehicles.length && !isLoading">
       <h3>Машины</h3>
-      <div v-for="(vehicle, index) in data.vehicles" :key="vehicle.id" class="vehicle-block">
-        <h4>Машина #{{ index + 1 }} — {{ vehicle.model }} ({{ vehicle.year }})</h4>
-        <table>
-          <tbody>
-            <tr>
-              <td><strong>ID</strong></td>
-              <td>{{ vehicle.id }}</td>
-            </tr>
-            <!-- Остальная информация о машине -->
-          </tbody>
-        </table>
+      <div v-for="vehicle in data.vehicles" :key="vehicle.id">
+        <CarCard
+          :image="vehicle.images[0].image"
+          :model="vehicle.model"
+          :transmission="vehicle.transmission"
+          :seats="vehicle.seats"
+          :engine_capacity="vehicle.engine_capacity"
+          :engine_hp="vehicle.engine_hp"
+          :deposit="vehicle.deposit"
+          :rent_period_days="vehicle.rent_period_days"
+          :rate_subtotal="vehicle.rate_subtotal"
+        />
       </div>
     </div>
 
@@ -52,8 +53,12 @@
 
 <script>
 import axios from 'axios';
+import CarCard from './components/CarCard.vue'; // Импортируем компонент
 
 export default {
+  components: {
+    CarCard
+  },
   data() {
     return {
       form: {
