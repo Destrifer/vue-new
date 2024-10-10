@@ -1,7 +1,10 @@
 <template>
   <div class="car-card">
-    <img :src="image" alt="Car image" class="car-image" />
-    <h4>{{ model }}</h4>
+    <!-- Ссылка на страницу машины -->
+    <router-link :to="{ name: 'CarDetails', params: { id: carId } }">
+      <img :src="image" alt="Car image" class="car-image" />
+      <h4>{{ model }}</h4>
+    </router-link>
     <p><strong>Transmission:</strong> {{ transmission }}</p>
     <p><strong>Seats:</strong> {{ seats }}</p>
     <p><strong>Engine:</strong> {{ engine_capacity }}L ({{ engine_hp }} HP)</p>
@@ -14,6 +17,10 @@
 <script>
 export default {
   props: {
+    carId: {
+      type: Number,
+      required: true
+    },
     image: String,
     model: String,
     transmission: String,
