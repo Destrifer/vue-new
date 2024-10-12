@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Весь код, который был в App.vue -->
     <!-- Форма для поиска машин -->
     <form @submit.prevent="fetchCars">
       <div>
@@ -21,18 +20,10 @@
       </div>
     </form>
 
-    <!-- Прелоадер -->
-    <div v-if="isLoading" class="preloader">
-      <p>Загрузка данных...</p>
-    </div>
-
-    <!-- Выводим данные как есть для отладки -->
-    <!-- <pre v-else>{{ data }}</pre> -->
-
     <!-- Проверка: если данные о машинах существуют -->
-    <div v-if="data && data.vehicles && data.vehicles.length && !isLoading">
+    <div v-if="cars.length">
       <h3>Машины</h3>
-      <div v-for="vehicle in data.vehicles" :key="vehicle.id">
+      <div v-for="vehicle in cars" :key="vehicle.id">
         <CarCard
           :car-id="vehicle.id"
           :image="vehicle.images[0].image"
@@ -46,6 +37,11 @@
           :rate_subtotal="vehicle.rate_subtotal"
         />
       </div>
+      <!-- Зона загрузки дополнительных данных -->
+      <div class="load-more-section">
+        <button v-if="!isFetchingMore" @click="loadMoreCars">Загрузить еще машины</button>
+        <p v-else>Загрузка данных...</p>
+      </div>
     </div>
 
     <!-- Сообщение, если машин нет -->
@@ -55,7 +51,7 @@
 
 <script>
 import axios from 'axios';
-import CarCard from '../components/CarCard.vue'; // Импортируем компонент
+import CarCard from '../components/CarCard.vue'; // Импорт компонента
 
 export default {
   components: {
@@ -68,9 +64,12 @@ export default {
         fromDate: new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0],
         toDate: new Date(Date.now() + 10 * 86400000).toISOString().split('T')[0]
       },
-      data: null,
+      cars: [], // Список всех загруженных машин
       locationNamesFit: [],
-      isLoading: false
+      isLoading: false,
+      isFetchingMore: false,
+      page: 1,
+      perPage: 2 // Количество машин на страницу
     };
   },
   methods: {
@@ -95,16 +94,44 @@ export default {
           'from-time': '12:00',
           'to-time': '12:00',
           promocode: null,
-          page: 1,
-          per_page: 2
+          page: this.page,
+          per_page: this.perPage
         };
         const queryString = new URLSearchParams(params).toString();
         const response = await axios.get(`https://new.mycarrental.ru/api/v2/search_cars?${queryString}`);
-        this.data = response.data;
+        this.cars = response.data.vehicles; // Загружаем первую партию машин
       } catch (error) {
         console.error('Ошибка запроса:', error);
       } finally {
         this.isLoading = false;
+      }
+    },
+    async loadMoreCars() {
+      this.page += 1;
+      this.isFetchingMore = true;
+      try {
+        const fromDateFormatted = this.formatDate(this.form.fromDate);
+        const toDateFormatted = this.formatDate(this.form.toDate);
+
+        axios.defaults.headers.common['X-Requested-With'] = null;
+        const params = {
+          'from-id': this.form.fromId,
+          'to-id': 71,
+          'from-date': fromDateFormatted,
+          'to-date': toDateFormatted,
+          'from-time': '12:00',
+          'to-time': '12:00',
+          promocode: null,
+          page: this.page,
+          per_page: this.perPage
+        };
+        const queryString = new URLSearchParams(params).toString();
+        const response = await axios.get(`https://new.mycarrental.ru/api/v2/search_cars?${queryString}`);
+        this.cars = [...this.cars, ...response.data.vehicles]; // Добавляем новые машины к существующему списку
+      } catch (error) {
+        console.error('Ошибка при подгрузке машин:', error);
+      } finally {
+        this.isFetchingMore = false;
       }
     },
     async fetchRegions() {
@@ -126,6 +153,7 @@ export default {
   watch: {
     'form.fromId'(newId) {
       if (newId) {
+        this.page = 1;
         this.fetchCars();
       }
     },
@@ -146,5 +174,9 @@ export default {
   font-size: 18px;
   font-weight: bold;
   color: #333;
+}
+.load-more-section {
+  text-align: center;
+  margin-top: 20px;
 }
 </style>
