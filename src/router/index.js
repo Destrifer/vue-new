@@ -9,12 +9,24 @@ const routes = [
 		component: HomePage
 	},
 	{
-		path: '/car/:id', // Маршрут для каждой машины
+		path: '/car/:id',
 		name: 'CarDetails',
 		component: CarDetails,
-		props: true // Чтобы передавать параметры как пропсы
+		props: route => ({
+			carId: Number(route.params.id),
+			image: route.params.image,
+			model: route.params.model,
+			transmission: route.params.transmission,
+			seats: route.params.seats,
+			engine_capacity: route.params.engine_capacity,
+			engine_hp: route.params.engine_hp,
+			deposit: route.params.deposit,
+			rent_period_days: route.params.rent_period_days,
+			rate_subtotal: route.params.rate_subtotal
+		})
 	}
 ];
+
 
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),

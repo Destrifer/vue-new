@@ -1,10 +1,26 @@
 <template>
   <div class="car-card">
-    <!-- Ссылка на страницу машины -->
-    <router-link :to="{ name: 'CarDetails', params: { id: carId } }">
+    <router-link
+      :to="{
+        name: 'CarDetails',
+        params: {
+          id: carId,
+          image: image,
+          model: model,
+          transmission: transmission,
+          seats: seats,
+          engine_capacity: engine_capacity,
+          engine_hp: engine_hp,
+          deposit: deposit,
+          rent_period_days: rent_period_days,
+          rate_subtotal: rate_subtotal
+        }
+      }"
+    >
       <img :src="image" alt="Car image" class="car-image" />
       <h4>{{ model }}</h4>
     </router-link>
+    <!-- Остальная информация по машине -->
     <p><strong>Transmission:</strong> {{ transmission }}</p>
     <p><strong>Seats:</strong> {{ seats }}</p>
     <p><strong>Engine:</strong> {{ engine_capacity }}L ({{ engine_hp }} HP)</p>
@@ -33,17 +49,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.car-card {
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin: 8px;
-  text-align: center;
-}
-.car-image {
-  width: 100%;
-  height: auto;
-  max-width: 300px;
-}
-</style>

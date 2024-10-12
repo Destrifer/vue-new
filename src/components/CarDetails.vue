@@ -1,35 +1,50 @@
 <template>
   <div>
-    <h2>Car Details for ID: {{ carId }}</h2>
-    <!-- Здесь будет выводиться информация о машине -->
-    <div v-if="car">
-      <img :src="car.images[0].image" alt="Car Image" />
-      <p>Model: {{ car.model }}</p>
-      <p>Transmission: {{ car.transmission }}</p>
-      <p>Seats: {{ car.seats }}</p>
-      <!-- Другие параметры машины -->
-    </div>
-    <p v-else>Loading car details...</p>
+    <h2>Информация о машине</h2>
+    <img :src="car.image" alt="Car image" />
+    <p><strong>Модель:</strong> {{ car.model }}</p>
+    <p><strong>Трансмиссия:</strong> {{ car.transmission }}</p>
+    <p><strong>Места:</strong> {{ car.seats }}</p>
+    <p><strong>Объем двигателя:</strong> {{ car.engine_capacity }}L</p>
+    <p><strong>Мощность двигателя:</strong> {{ car.engine_hp }} HP</p>
+    <p><strong>Депозит:</strong> {{ car.deposit }} р.</p>
+    <p><strong>Срок аренды:</strong> {{ car.rent_period_days }} дней</p>
+    <p><strong>Общая стоимость:</strong> {{ car.rate_subtotal }} р.</p>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
-  props: ['carId'],
+  props: {
+    carId: {
+      type: Number,
+      required: true
+    },
+    image: String,
+    model: String,
+    transmission: String,
+    seats: Number,
+    engine_capacity: Number,
+    engine_hp: Number,
+    deposit: Number,
+    rent_period_days: Number,
+    rate_subtotal: Number
+  },
   data() {
     return {
-      car: null // Данные о машине
+      car: {
+        id: this.carId,
+        image: this.image,
+        model: this.model,
+        transmission: this.transmission,
+        seats: this.seats,
+        engine_capacity: this.engine_capacity,
+        engine_hp: this.engine_hp,
+        deposit: this.deposit,
+        rent_period_days: this.rent_period_days,
+        rate_subtotal: this.rate_subtotal
+      }
     };
-  },
-  async created() {
-    try {
-      const response = await axios.get(`https://new.mycarrental.ru/api/v2/car/${this.carId}`);
-      this.car = response.data;
-    } catch (error) {
-      console.error('Error fetching car details:', error);
-    }
   }
 };
 </script>
