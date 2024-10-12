@@ -65,8 +65,8 @@ export default {
     return {
       form: {
         fromId: null,
-        fromDate: '2024-10-12',
-        toDate: '2024-10-16'
+        fromDate: new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0],
+        toDate: new Date(Date.now() + 10 * 86400000).toISOString().split('T')[0]
       },
       data: null,
       locationNamesFit: [],
