@@ -20,6 +20,11 @@
       </div>
     </form>
 
+    <!-- Прелоадер для первичной загрузки -->
+    <div v-if="isLoading && cars.length === 0" class="preloader">
+      <p>Загрузка данных...</p>
+    </div>
+
     <!-- Проверка: если данные о машинах существуют -->
     <div v-if="cars.length">
       <h3>Машины</h3>
@@ -45,7 +50,7 @@
     </div>
 
     <!-- Сообщение, если машин нет -->
-    <p v-else-if="!isLoading">Машины не найдены или данные недоступны</p>
+    <p v-else-if="!isLoading && cars.length === 0">Машины не найдены или данные недоступны</p>
   </div>
 </template>
 
@@ -66,8 +71,8 @@ export default {
       },
       cars: [], // Список всех загруженных машин
       locationNamesFit: [],
-      isLoading: false,
-      isFetchingMore: false,
+      isLoading: false, // Состояние для первичной загрузки
+      isFetchingMore: false, // Состояние для подгрузки новых данных
       page: 1,
       perPage: 2 // Количество машин на страницу
     };
