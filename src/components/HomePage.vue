@@ -30,17 +30,20 @@
       <h3>Машины</h3>
       <div v-for="vehicle in cars" :key="vehicle.id">
         <CarCard
-          :car-id="vehicle.id"
-          :image="vehicle.images[0].image"
-          :model="vehicle.model"
-          :transmission="vehicle.transmission"
-          :seats="vehicle.seats"
-          :engine_capacity="vehicle.engine_capacity"
-          :engine_hp="vehicle.engine_hp"
-          :deposit="vehicle.deposit"
-          :rent_period_days="vehicle.rent_period_days"
-          :rate_subtotal="vehicle.rate_subtotal"
-        />
+  :car-id="vehicle.id"
+  :image="vehicle.images[0].image"
+  :model="vehicle.model"
+  :transmission="vehicle.transmission"
+  :seats="vehicle.seats"
+  :engine_capacity="vehicle.engine_capacity"
+  :engine_hp="vehicle.engine_hp"
+  :deposit="vehicle.deposit"
+  :rent_period_days="vehicle.rent_period_days"
+  :rate_subtotal="vehicle.rate_subtotal"
+  :form-from-id="form.fromId"
+  :form-from-date="form.fromDate"
+  :form-to-date="form.toDate"
+/>
       </div>
       <!-- Зона загрузки дополнительных данных -->
       <div class="load-more-section">

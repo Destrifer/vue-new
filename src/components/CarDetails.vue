@@ -2,49 +2,31 @@
   <div>
     <h2>Информация о машине</h2>
     <img :src="car.image" alt="Car image" />
-    <p><strong>Модель:</strong> {{ car.model }}</p>
-    <p><strong>Трансмиссия:</strong> {{ car.transmission }}</p>
-    <p><strong>Места:</strong> {{ car.seats }}</p>
-    <p><strong>Объем двигателя:</strong> {{ car.engine_capacity }}L</p>
-    <p><strong>Мощность двигателя:</strong> {{ car.engine_hp }} HP</p>
-    <p><strong>Депозит:</strong> {{ car.deposit }} р.</p>
-    <p><strong>Срок аренды:</strong> {{ car.rent_period_days }} дней</p>
-    <p><strong>Общая стоимость:</strong> {{ car.rate_subtotal }} р.</p>
+    <h3>{{ car.model }}</h3>
+    <p><strong>Transmission:</strong> {{ car.transmission }}</p>
+    <p><strong>Seats:</strong> {{ car.seats }}</p>
+    <p><strong>Engine:</strong> {{ car.engine_capacity }}L ({{ car.engine_hp }} HP)</p>
+    <p><strong>Deposit:</strong> {{ car.deposit }} р.</p>
+    <p><strong>Rent period:</strong> {{ car.rent_period_days }} days</p>
+    <p><strong>Total price:</strong> {{ car.rate_subtotal }} р.</p>
+
+    <!-- Добавляем отображение данных формы -->
+    <h4>Данные поиска:</h4>
+    <p><strong>From Location ID:</strong> {{ car.fromId }}</p>
+    <p><strong>From Date:</strong> {{ car.fromDate }}</p>
+    <p><strong>To Date:</strong> {{ car.toDate }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    carId: {
-      type: Number,
-      required: true
-    },
-    image: String,
-    model: String,
-    transmission: String,
-    seats: Number,
-    engine_capacity: Number,
-    engine_hp: Number,
-    deposit: Number,
-    rent_period_days: Number,
-    rate_subtotal: Number
-  },
   data() {
     return {
-      car: {
-        id: this.carId,
-        image: this.image,
-        model: this.model,
-        transmission: this.transmission,
-        seats: this.seats,
-        engine_capacity: this.engine_capacity,
-        engine_hp: this.engine_hp,
-        deposit: this.deposit,
-        rent_period_days: this.rent_period_days,
-        rate_subtotal: this.rate_subtotal
-      }
+      car: {}
     };
+  },
+  mounted() {
+    this.car = this.$route.params; // Получаем данные из маршрута
   }
 };
 </script>

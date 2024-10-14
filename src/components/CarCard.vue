@@ -13,7 +13,10 @@
           engine_hp: engine_hp,
           deposit: deposit,
           rent_period_days: rent_period_days,
-          rate_subtotal: rate_subtotal
+          rate_subtotal: rate_subtotal,
+          fromId: formFromId,
+          fromDate: formFromDate,
+          toDate: formToDate
         }
       }"
     >
@@ -45,7 +48,22 @@ export default {
     engine_hp: Number,
     deposit: Number,
     rent_period_days: Number,
-    rate_subtotal: Number
+    rate_subtotal: Number,
+    formFromId: Number,        // Передаем данные формы
+    formFromDate: String,
+    formToDate: String
   }
 };
 </script>
+
+<style scoped>
+.car-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 10px 0;
+}
+.car-image {
+  width: 100%;
+  height: auto;
+}
+</style>
