@@ -45,6 +45,8 @@
   :form-to-date="form.toDate"
 />
       </div>
+
+			<pre>{{ this.cars }}</pre>
       <!-- Зона загрузки дополнительных данных -->
       <div class="load-more-section">
         <button v-if="!isFetchingMore" @click="loadMoreCars">Загрузить еще машины</button>
