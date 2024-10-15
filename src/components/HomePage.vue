@@ -20,21 +20,32 @@
       </div>
     </form>
 
+    <!-- Фильтр по классу автомобилей -->
+    <div>
+      <h3>Фильтр по классам автомобилей</h3>
+      <div>
+        <button
+          v-for="classId in [1, 2, 3, 4, 5, 6, 7]"
+          :key="classId"
+          @click="toggleClassFilter(classId)"
+          :class="{ active: selectedClasses.includes(classId) }"
+        >
+          Class {{ classId }}
+        </button>
+      </div>
+      <!-- Отображение количества автомобилей -->
+      <p v-if="filteredCars.length">Отображено {{ filteredCars.length }} автомобилей</p>
+      <p v-else>Машин выбранных классов нет</p>
+    </div>
+
     <!-- Прелоадер для первичной загрузки -->
     <div v-if="isLoading && cars.length === 0" class="preloader">
       <p>Загрузка данных...</p>
     </div>
 
-    <!-- Фильтры по классу машин -->
-    <div class="filter-buttons">
-      <button v-for="id in [1, 2, 3, 4, 5, 6, 7]" :key="id" @click="filterClass(id)" :class="{ active: activeClassId === id }">
-        Класс {{ id }}
-      </button>
-    </div>
-
     <!-- Проверка: если данные о машинах существуют -->
     <div v-if="filteredCars.length">
-      <h3>Машины класса {{ activeClassId }}</h3>
+      <h3>Машины</h3>
       <div v-for="vehicle in filteredCars" :key="vehicle.id">
         <CarCard
           :car-id="vehicle.id"
@@ -53,8 +64,6 @@
         />
       </div>
 
-      <pre>{{ this.cars }}</pre>
-
       <!-- Зона загрузки дополнительных данных -->
       <div class="load-more-section">
         <button v-if="!isFetchingMore" @click="loadMoreCars">Загрузить еще машины</button>
@@ -62,10 +71,7 @@
       </div>
     </div>
 
-    <!-- Сообщение, если машин выбранного класса нет -->
-    <p v-else-if="!isLoading && filteredCars.length === 0">Машины класса {{ activeClassId }} не найдены</p>
-
-    <!-- Сообщение, если машин нет вообще -->
+    <!-- Сообщение, если машин нет -->
     <p v-else-if="!isLoading && cars.length === 0">Машины не найдены или данные недоступны</p>
   </div>
 </template>
@@ -86,18 +92,20 @@ export default {
         toDate: new Date(Date.now() + 10 * 86400000).toISOString().split('T')[0]
       },
       cars: [], // Список всех загруженных машин
+      selectedClasses: [], // Выбранные классы машин
       locationNamesFit: [],
       isLoading: false, // Состояние для первичной загрузки
       isFetchingMore: false, // Состояние для подгрузки новых данных
       page: 1,
-      perPage: 2, // Количество машин на страницу
-      activeClassId: 1 // Активный class_id для фильтрации
+      perPage: 2 // Количество машин на страницу
     };
   },
   computed: {
-    // Отфильтрованные машины по class_id
     filteredCars() {
-      return this.cars.filter(car => car.class_id === this.activeClassId);
+      if (this.selectedClasses.length === 0) {
+        return this.cars; // Если классы не выбраны, отображаем все машины
+      }
+      return this.cars.filter(car => this.selectedClasses.includes(car.class_id));
     }
   },
   methods: {
@@ -162,8 +170,13 @@ export default {
         this.isFetchingMore = false;
       }
     },
-    filterClass(classId) {
-      this.activeClassId = classId;
+    toggleClassFilter(classId) {
+      const index = this.selectedClasses.indexOf(classId);
+      if (index > -1) {
+        this.selectedClasses.splice(index, 1); // Убираем класс, если он был выбран
+      } else {
+        this.selectedClasses.push(classId); // Добавляем класс, если он не был выбран
+      }
     },
     async fetchRegions() {
       this.isLoading = true;
@@ -210,16 +223,7 @@ export default {
   text-align: center;
   margin-top: 20px;
 }
-.filter-buttons {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.filter-buttons button {
-  margin-right: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-.filter-buttons button.active {
+button.active {
   background-color: #007bff;
   color: white;
 }
