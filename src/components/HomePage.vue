@@ -25,28 +25,36 @@
       <p>Загрузка данных...</p>
     </div>
 
+    <!-- Фильтры по классу машин -->
+    <div class="filter-buttons">
+      <button v-for="id in [1, 2, 3, 4, 5, 6, 7]" :key="id" @click="filterClass(id)" :class="{ active: activeClassId === id }">
+        Класс {{ id }}
+      </button>
+    </div>
+
     <!-- Проверка: если данные о машинах существуют -->
-    <div v-if="cars.length">
-      <h3>Машины</h3>
-      <div v-for="vehicle in cars" :key="vehicle.id">
+    <div v-if="filteredCars.length">
+      <h3>Машины класса {{ activeClassId }}</h3>
+      <div v-for="vehicle in filteredCars" :key="vehicle.id">
         <CarCard
-  :car-id="vehicle.id"
-  :image="vehicle.images[0].image"
-  :model="vehicle.model"
-  :transmission="vehicle.transmission"
-  :seats="vehicle.seats"
-  :engine_capacity="vehicle.engine_capacity"
-  :engine_hp="vehicle.engine_hp"
-  :deposit="vehicle.deposit"
-  :rent_period_days="vehicle.rent_period_days"
-  :rate_subtotal="vehicle.rate_subtotal"
-  :form-from-id="form.fromId"
-  :form-from-date="form.fromDate"
-  :form-to-date="form.toDate"
-/>
+          :car-id="vehicle.id"
+          :image="vehicle.images[0].image"
+          :model="vehicle.model"
+          :transmission="vehicle.transmission"
+          :seats="vehicle.seats"
+          :engine_capacity="vehicle.engine_capacity"
+          :engine_hp="vehicle.engine_hp"
+          :deposit="vehicle.deposit"
+          :rent_period_days="vehicle.rent_period_days"
+          :rate_subtotal="vehicle.rate_subtotal"
+          :form-from-id="form.fromId"
+          :form-from-date="form.fromDate"
+          :form-to-date="form.toDate"
+        />
       </div>
 
-			<pre>{{ this.cars }}</pre>
+      <pre>{{ this.cars }}</pre>
+
       <!-- Зона загрузки дополнительных данных -->
       <div class="load-more-section">
         <button v-if="!isFetchingMore" @click="loadMoreCars">Загрузить еще машины</button>
@@ -54,7 +62,10 @@
       </div>
     </div>
 
-    <!-- Сообщение, если машин нет -->
+    <!-- Сообщение, если машин выбранного класса нет -->
+    <p v-else-if="!isLoading && filteredCars.length === 0">Машины класса {{ activeClassId }} не найдены</p>
+
+    <!-- Сообщение, если машин нет вообще -->
     <p v-else-if="!isLoading && cars.length === 0">Машины не найдены или данные недоступны</p>
   </div>
 </template>
@@ -79,8 +90,15 @@ export default {
       isLoading: false, // Состояние для первичной загрузки
       isFetchingMore: false, // Состояние для подгрузки новых данных
       page: 1,
-      perPage: 2 // Количество машин на страницу
+      perPage: 2, // Количество машин на страницу
+      activeClassId: 1 // Активный class_id для фильтрации
     };
+  },
+  computed: {
+    // Отфильтрованные машины по class_id
+    filteredCars() {
+      return this.cars.filter(car => car.class_id === this.activeClassId);
+    }
   },
   methods: {
     formatDate(date) {
@@ -144,6 +162,9 @@ export default {
         this.isFetchingMore = false;
       }
     },
+    filterClass(classId) {
+      this.activeClassId = classId;
+    },
     async fetchRegions() {
       this.isLoading = true;
       try {
@@ -188,5 +209,18 @@ export default {
 .load-more-section {
   text-align: center;
   margin-top: 20px;
+}
+.filter-buttons {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.filter-buttons button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.filter-buttons button.active {
+  background-color: #007bff;
+  color: white;
 }
 </style>
