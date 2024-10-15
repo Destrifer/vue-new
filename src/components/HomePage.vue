@@ -42,7 +42,7 @@
     <div v-if="isLoading && cars.length === 0" class="preloader">
       <p>Загрузка данных...</p>
     </div>
-
+		<pre>{{ this.cars }}</pre>
     <!-- Проверка: если данные о машинах существуют -->
     <div v-if="filteredCars.length">
       <h3>Машины</h3>
@@ -228,3 +228,4 @@ button.active {
   color: white;
 }
 </style>
+ 
